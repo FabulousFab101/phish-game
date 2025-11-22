@@ -1,80 +1,68 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <link rel="stylesheet" href="https://unpkg.com/98.css"/>
-</head>
-<body>
-<div class="window" style="width: 520px; height: 300px; display: flex; flex-direction: column;">
-  <div class="title-bar">
-    <div class="title-bar-text">Macrohard Mail: Unread Mail</div>
-    <div class="title-bar-controls">
-      <button aria-label="Minimize"></button>
-      <button aria-label="Maximize"></button>
-      <button aria-label="Close"></button>
-    </div>
-  </div>
-  <div class="window-body" style="margin: 1px; gap: 1px; flex-grow: 1; display: flex; flex-direction: column;">
-    <div style="margin: 6px; gap: 12px; display: flex;">
-      <p style="margin: 0px"><u>F</u>ile</p>
-      <p style="margin: 0px"><u>E</u>dit</p>
-      <p style="margin: 0px"><u>V</u>iew</p>
-      <p style="margin: 0px"><u>H</u>elp</p>
-    </div>
-    <div style="display: flex; gap: 1px; flex-grow: 1;">
-      <div class="sunken-panel" style="width: 30%;">
-        <table class="interactive" style="width: 100%;">
-          <thead>
-            <tr>
-              <th>From</th>
-              <th>Subject</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Grandma</td>
-              <td>I cooked cookies</td>
-            </tr>
-            <tr>
-              <td>Rapid Bank</td>
-              <td>Sussy Amongus Activity</td>
-            </tr>
-          </tbody>
-        </table>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/98.css" />
+  </head>
+  <body style="background-color: teal;">
+    <div class="window" style="display:none; position: fixed;top: 50%; left: 50%;transform: translate(-50%, -50%);width: 800px; height: 600px;display: flex; flex-direction: column;">
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <img src="assets/envelope_closed-1.png" alt="Mail" style="margin-top: -4px; margin-bottom: -4px; image-rendering: pixelated;"> Macrohard Mail: Unread Mail
+        </div>
+        <div class="title-bar-controls">
+          <button aria-label="Help"></button>
+        </div>
       </div>
-      <div style="display: flex; width: 70%; flex-direction: column;">
-        <div class="status-field-border" style="padding: 8px; margin: 8px;">
-          <div style="display: flex; gap: 8px;">
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <p style="margin: 0%; font-weight: bold;">From:</p>
-              <p style="margin: 0%; font-weight: bold;">Subject:</p>
+      <div class="window-body" style="margin-top: 2px; margin-bottom: 2px; margin-left: 1px; margin-right: 1px; gap: 1px; flex-grow: 1; display: flex; flex-direction: column;">
+        <div style="display: flex; gap: 1px; flex-grow: 1;">
+          <div class="sunken-panel" style="width: 30%;">
+            <table class="interactive" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>From</th>
+                  <th>Subject</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Grandma</td>
+                  <td>Hi John, it's Grandma!</td>
+                </tr>
+                <tr>
+                  <td>Global Secure</td>
+                  <td>URGENT: RECOVER YOUR FUNDS</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; width: 70%; flex-direction: column;">
+            <div class="status-field-border" style="padding: 8px; margin: 8px;">
+              <div style="display: flex; gap: 8px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <p style="margin: 0%; font-weight: bold;">From:</p>
+                  <p style="margin: 0%; font-weight: bold;">Subject:</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <p class="from" style="margin: 0%;">  </p>
+                  <p class="subject-line" style="margin: 0%;"> </p>
+                </div>
+              </div>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <p style="margin: 0%;">Grandma &lt gramgram@gmail.com &gt</p>
-              <p style="margin: 0%;">I made cookies</p>
+            <div class="field-border body" style="padding: 8px; flex-grow: 1; overflow: auto; height: 0;">
             </div>
           </div>
         </div>
-        <div class="field-border" style="padding: 8px; flex-grow: 1; overflow: auto; height: 0;">
-          Dear bum ass grand child, <br><br>
-          
-          I baked those damn weed cookies you alway been asking me to make. weeofhuwuefhwouefh woeifh wieofhwioehf wioefh oiwehf oiwehfowiefhwoiefh woehfwf <br>
-
-          <br><br>
-          Much love,<br>
-          Grandma
-        </div>
+      </div>
+      <div style="margin: 4px; gap: 8px; display: flex;">
+        <div style="flex-grow: 1;"></div>
+        <button disabled class="spam">Mark as Spam</button>
+        <button disabled class="read">Mark as Read</button>
+      </div>
+      <div class="status-bar">
+        <p class="status-bar-field"></p>
+        <p class="status-bar-field" style="flex-grow: unset; padding-left: 12px; padding-right: 12px;">4:20 PM</p>
       </div>
     </div>
-  </div>
-  <div style="margin: 4px; gap: 4px; display: flex;">
-    <div style="flex-grow: 1;"></div>
-    <button>Mark as Spam</button>
-    <button>Mark as Read</button>
-  </div>
-  <div class="status-bar">
-    <p class="status-bar-field"></p>
-    <p class="status-bar-field" style="flex-grow: unset; width: 10%;">2 Emails</p>
-  </div>
-</div>
-</body>
+  </body>
+  <script src="script1.js"></script>
 </html>
