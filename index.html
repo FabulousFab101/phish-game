@@ -16,19 +16,18 @@
 
     .window {
       width: 900px;
+      height: 675px;
     }
 
-    /* Outer gray "screen" box */
     .screen-box {
       border: inset 3px;
       background: #c0c0c0;
       padding: 6px;
-      height: 500px;
+      height: calc(100% - 50px);
       display: flex;
       flex-direction: column;
     }
 
-    /* Blue header bar inside the screen */
     .inner-header {
       background: navy;
       color: white;
@@ -40,13 +39,15 @@
       align-items: center;
       border: inset 2px;
       font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    /* The two side-by-side white boxes */
     .two-pane {
       flex: 1;
       display: flex;
       border: inset 2px;
+      min-height: 0;
     }
 
     #subject-list {
@@ -54,13 +55,17 @@
       background: white;
       border-right: inset 2px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
 
     #content-view {
       flex: 1;
       background: white;
       overflow-y: auto;
-      padding: 8px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
     }
 
     .subject {
@@ -72,14 +77,73 @@
     .subject:hover {
       background: #d3d3ff;
     }
+
+    .title-bar-text img {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+    }
+
+    .title-bar-text {
+      font-size: 14px;
+    }
   </style>
 </head>
 
+<!-- POPUP: now includes popup-open class -->
+<div id="tutorial-popup" class="window popup-open" style="
+    display:none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    z-index: 10000;
+    font-size: 14px;
+    height: auto;
+">
+  <div class="title-bar">
+    <div class="title-bar-text">Yikes</div>
+    <div class="title-bar-controls">
+      <button aria-label="Close" onclick="closePopupById('tutorial-popup')"></button>
+    </div>
+  </div>
+
+  <div class="window-body" style="
+      padding: 4px 6px;
+      text-align: left;
+      display: block;
+  ">
+    <p style="margin:0; margin-bottom: 12px;">
+      This inbox is a mess. Let’s clean it up.
+    </p>
+
+    <div style="text-align:center; width:100%;">
+      <button onclick="closePopupById('tutorial-popup')">OK</button>
+    </div>
+  </div>
+</div>
+
+<audio id="notify-sound" src="assets/notify.mp3"></audio>
+
 <body>
+
+  <!-- CLICK BLOCKER -->
+  <div id="click-blocker" style="
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index: 9000;
+    display:none;
+  "></div>
 
   <div class="window">
     <div class="title-bar">
-      <div class="title-bar-text">Address Book</div>
+      <div class="title-bar-text">
+        <img src="assets/mail-envelope.png" alt="Mail"> Email
+      </div>
       <div class="title-bar-controls">
         <button aria-label="Minimize"></button>
         <button aria-label="Maximize"></button>
@@ -95,17 +159,47 @@
 
         <div class="two-pane">
           <div id="subject-list"></div>
-          <div id="content-view">Select an email.</div>
+          <div id="content-view"></div>
         </div>
 
       </div>
 
     </div>
-
-    <div class="status-bar">
-      <p class="status-bar-field" id="score">Score: 0</p>
-    </div>
   </div>
+
+  <script>
+    // UNIVERSAL POPUP SYSTEM -------------------------
+
+    function showPopupById(id) {
+      const popup = document.getElementById(id);
+      if (!popup) return;
+
+      popup.style.display = "block";
+      document.getElementById("click-blocker").style.display = "block";
+
+      const notify = document.getElementById("notify-sound");
+      notify?.play().catch(() => {});
+    }
+
+    function closePopupById(id) {
+      const popup = document.getElementById(id);
+      if (!popup) return;
+
+      popup.style.display = "none";
+
+      // hide blocker only if NO popups remain open
+      const stillOpen = document.querySelectorAll(
+        ".popup-open:not([style*='display: none'])"
+      );
+
+      if (stillOpen.length === 0) {
+        document.getElementById("click-blocker").style.display = "none";
+      }
+    }
+
+    // Show first popup on load
+    showPopupById("tutorial-popup");
+  </script>
 
   <script src="script.js"></script>
 </body>
