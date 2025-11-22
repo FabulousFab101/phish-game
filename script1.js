@@ -320,3 +320,19 @@ document.querySelectorAll('button.start-button').forEach(element => {
     
   })
 });
+
+function updateTime() {
+  const el = document.getElementById("status-time");
+  const now = new Date();
+
+  el.textContent = now.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+// update once on load
+updateTime();
+
+// update every minute
+setInterval(updateTime, 60 * 1000);
