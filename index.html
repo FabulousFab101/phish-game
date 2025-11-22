@@ -16,23 +16,21 @@
 
     .window {
       width: 900px;
-      height: 675px; /* 4:3 ratio */
+      height: 675px;
     }
 
-    /* Outer gray "screen" box */
     .screen-box {
       border: inset 3px;
       background: #c0c0c0;
       padding: 6px;
-      height: calc(100% - 50px);
+      height: 617px;
       display: flex;
       flex-direction: column;
     }
 
-    /* Blue header bar inside the screen */
     .inner-header {
-      background: navy;
-      color: white;
+      background: linear-gradient(to right, #818181, #c3c3c3);
+      color: #c3c3c3;
       padding: 4px 6px;
       font-weight: bold;
       margin-bottom: 6px;
@@ -40,17 +38,16 @@
       display: flex;
       align-items: center;
       border: inset 2px;
-      font-size: 14px; /* match title-bar-text */
-      width: calc(100%); /* account for screen-box padding */
+      font-size: 14px;
+      width: 100%;
       box-sizing: border-box;
     }
 
-    /* The two side-by-side white boxes */
     .two-pane {
       flex: 1;
       display: flex;
       border: inset 2px;
-      min-height: 0; /* ensures child flex items can shrink properly */
+      min-height: 0;
     }
 
     #subject-list {
@@ -66,7 +63,7 @@
       flex: 1;
       background: white;
       overflow-y: auto;
-      padding: 8px;
+      padding: 6px;
       display: flex;
       flex-direction: column;
     }
@@ -81,112 +78,57 @@
       background: #d3d3ff;
     }
 
-    /* Envelope placeholder in title bar */
     .title-bar-text img {
       width: 16px;
       height: 16px;
       margin-right: 6px;
     }
 
-    /* Title bar text font */
     .title-bar-text {
-      font-size: 14px; /* same as inner-header */
+      font-size: 14px;
+    }
+
+    /* Start overlay */
+    #overlay {
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:black;
+      z-index:9999;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      color:white;
+      font-family:sans-serif;
+      font-size:20px;
     }
   </style>
 </head>
+<body>
 
-<div id="overlay" style="
+  <!-- START OVERLAY -->
+  <div id="overlay">
+    <button id="start-button">Click to Start</button>
+  </div>
+  <audio id="startup-sound" src="assets/startup.mp3"></audio>
+
+  <!-- CLICK BLOCKER -->
+  <div id="click-blocker" style="
     position: fixed;
     top:0;
     left:0;
     width:100%;
     height:100%;
-    background:black;
-    z-index:9999;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    font-family:sans-serif;
-    font-size:20px;
-">
-  <button id="start-button">Click to Start</button>
-</div>
-
-<audio id="startup-sound" src="assets/startup.mp3"></audio>
-
-<script>
-const overlay = document.getElementById('overlay');
-const audio = document.getElementById('startup-sound');
-const startBtn = document.getElementById('start-button');
-
-startBtn.onclick = function() {
-    audio.play();
-    overlay.style.transition = "opacity 7s";
-    overlay.style.opacity = 0;
-};
-</script>
-
-<!-- Pop-up window -->
-<div id="tutorial-popup" class="window" style="
+    z-index: 9000;
     display:none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    z-index: 10000;
-    font-size: 14px;
-    height: auto; /* important: prevents huge gray box */
-">
-  <div class="title-bar">
-    <div class="title-bar-text">Yikes</div>
-    <div class="title-bar-controls">
-      <button aria-label="Close" onclick="closePopup()"></button>
-    </div>
-  </div>
+  "></div>
 
-  <div class="window-body" style="
-      padding: 10px 12px;
-      text-align: left;       /* force text left */
-      display: block;         /* overrides 98.css centering behavior */
-  ">
-    <p style="margin:0; margin-bottom: 12px;">
-      This inbox is a mess. Let’s clean it up.
-    </p>
-
-    <div style="text-align:center; width:100%;">
-      <button onclick="closePopup()">OK</button>
-    </div>
-  </div>
-</div>
-
-<audio id="notify-sound" src="assets/notify.mp3"></audio>
-
-<script>
-// Show popup after fade-in (replace overlay fade timeout)
-function showPopup() {
-    const popup = document.getElementById('tutorial-popup');
-    const notify = document.getElementById('notify-sound');
-
-    popup.style.display = 'block';
-    notify.play().catch(() => console.log("Audio blocked, user interaction required."));
-}
-
-function closePopup() {
-    document.getElementById('tutorial-popup').style.display = 'none';
-}
-
-// Example: show popup after startup fade (7s)
-setTimeout(showPopup, 7000);
-</script>
-
-<body>
-
+  <!-- MAIN WINDOW -->
   <div class="window">
     <div class="title-bar">
       <div class="title-bar-text">
-        <!-- Placeholder envelope PNG; add actual file in assets/ -->
         <img src="assets/mail-envelope.png" alt="Mail"> Email
       </div>
       <div class="title-bar-controls">
@@ -197,24 +139,148 @@ setTimeout(showPopup, 7000);
     </div>
 
     <div class="window-body">
-
       <div class="screen-box">
-
         <div class="inner-header">Inbox</div>
-
         <div class="two-pane">
           <div id="subject-list"></div>
           <div id="content-view"></div>
         </div>
-
       </div>
+    </div>
+  </div>
 
+  <!-- TUTORIAL POPUP -->
+  <div id="tutorial-popup" class="window popup-open" style="
+      display:none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      z-index: 10000;
+      font-size: 14px;
+      height: auto;
+  ">
+    <div class="title-bar">
+      <div class="title-bar-text">Yikes</div>
+      <div class="title-bar-controls">
+        <button aria-label="Close" onclick="closePopupById('tutorial-popup')"></button>
+      </div>
     </div>
 
-    <!-- Removed score status bar -->
+    <div class="window-body" style="
+        padding: 4px 6px;
+        text-align: left;
+        display: block;
+    ">
+      <p style="margin:0; margin-bottom: 12px;">
+        This inbox is a mess. Let’s clean it up.
+      </p>
+      <div style="text-align:center; width:100%;">
+        <button onclick="closePopupById('tutorial-popup')">OK</button>
+      </div>
+    </div>
+  </div>
 
+  <audio id="notify-sound" src="assets/notify.mp3"></audio>
+  <audio id="shutdown-sfx" src="assets/shutdown.mp3"></audio>
+
+  <!-- BSOD -->
+  <div id="bsod" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background:#0000aa;
+    color:white;
+    font-family:'Pixelated MS Sans Serif', 'MS Sans Serif', sans-serif;
+    font-weight:bold;
+    box-sizing:border-box;
+    z-index:9999999;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+    line-height:1.4;
+  ">
+    <div style="
+      background:#aaaaaa;
+      color:#0000aa;
+      width:220px;
+      text-align:center;
+      padding:6px 0;
+      margin-bottom:40px;
+      font-size:30px;
+    ">
+      Windows
+    </div>
+    <div style="max-width:700px; text-align:left;">
+      <p style="margin:0 0 20px 0;">
+        An error has occurred.
+      </p>
+      <p style="margin:0 0 20px 0;">
+        A malicious link or file was opened, and the system shut down this session.
+      </p>
+      <p style="margin:0 0 20px 0;">
+        Error Code: GET_PHISHED
+      </p>
+      <p style="margin:0;">
+        Press any key to continue.
+      </p>
+    </div>
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // ---------------- START BUTTON & OVERLAY ----------------
+    const overlay = document.getElementById('overlay');
+    const startBtn = document.getElementById('start-button');
+    const startupAudio = document.getElementById('startup-sound');
+    const popup = document.getElementById('tutorial-popup');
+    const notifyAudio = document.getElementById('notify-sound');
+
+    startBtn.onclick = () => {
+      // play startup sound
+      startupAudio.play().catch(() => console.log("Startup audio blocked"));
+
+      // fade overlay
+      overlay.style.transition = "opacity 7s";
+      overlay.style.opacity = 0;
+
+      // hide button immediately
+      startBtn.style.display = "none";
+
+      // after fade ends, hide overlay and show popup
+      setTimeout(() => {
+        overlay.style.display = "none";
+        popup.style.display = "block";
+        notifyAudio.play().catch(() => console.log("Notify audio blocked"));
+      }, 7000);
+    }
+
+    // ---------------- UNIVERSAL POPUP ----------------
+    function showPopupById(id) {
+      const popup = document.getElementById(id);
+      if (!popup) return;
+      popup.style.display = "block";
+      document.getElementById("click-blocker").style.display = "block";
+      notifyAudio.play().catch(() => {});
+    }
+
+    function closePopupById(id) {
+      const popup = document.getElementById(id);
+      if (!popup) return;
+      popup.style.display = "none";
+
+      // hide blocker only if no popups remain open
+      const stillOpen = document.querySelectorAll(".popup-open:not([style*='display: none'])");
+      if (stillOpen.length === 0) {
+        document.getElementById("click-blocker").style.display = "none";
+      }
+    }
+  </script>
+
 </body>
 </html>
