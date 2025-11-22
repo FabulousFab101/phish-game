@@ -1,19 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Phish Inbox</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="window">
-        <div id="titlebar">Inbox</div>
-        
-        <div id="email-list"></div>
+  <meta charset="UTF-8">
+  <title>Inbox</title>
+  <link rel="stylesheet" href="https://unpkg.com/98.css">
+  <style>
+    body {
+      background: teal;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        <div id="status">Score: 0</div>
+    .window {
+      width: 900px;
+    }
+
+    /* Outer gray "screen" box */
+    .screen-box {
+      border: inset 3px;
+      background: #c0c0c0;
+      padding: 6px;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Blue header bar inside the screen */
+    .inner-header {
+      background: navy;
+      color: white;
+      padding: 4px 6px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      border: inset 2px;
+      font-size: 14px;
+    }
+
+    /* The two side-by-side white boxes */
+    .two-pane {
+      flex: 1;
+      display: flex;
+      border: inset 2px;
+    }
+
+    #subject-list {
+      width: 35%;
+      background: white;
+      border-right: inset 2px;
+      overflow-y: auto;
+    }
+
+    #content-view {
+      flex: 1;
+      background: white;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .subject {
+      padding: 6px;
+      border-bottom: inset 1px;
+      cursor: pointer;
+    }
+
+    .subject:hover {
+      background: #d3d3ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text">Address Book</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="window-body">
+
+      <div class="screen-box">
+
+        <div class="inner-header">Inbox</div>
+
+        <div class="two-pane">
+          <div id="subject-list"></div>
+          <div id="content-view">Select an email.</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="status-bar">
+      <p class="status-bar-field" id="score">Score: 0</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

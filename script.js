@@ -1,39 +1,51 @@
 let score = 0;
 
-let emails = [
-    { subject: "Your invoice is ready", phishing: true },
-    { subject: "Meeting at 3 PM", phishing: false },
-    { subject: "Update your password now", phishing: true },
-    { subject: "Pizza order confirmed", phishing: false }
+const emails = [
+  {
+    subject: "Password reset required",
+    content: "Your password expires today. Click this link to update it.",
+    phishing: true
+  },
+  {
+    subject: "Lunch meeting moved",
+    content: "The meeting is now at 2 PM in Room 301.",
+    phishing: false
+  },
+  {
+    subject: "Verify bank account",
+    content: "We need your account details right away.",
+    phishing: true
+  }
 ];
 
-function drawEmails() {
-    let list = document.getElementById("email-list");
-    list.innerHTML = "";
+function drawSubjects() {
+  const list = document.getElementById("subject-list");
+  list.innerHTML = "";
 
-    emails.forEach((mail, index) => {
-        let div = document.createElement("div");
-        div.className = "email";
-        div.textContent = mail.subject;
+  emails.forEach((mail, i) => {
+    const div = document.createElement("div");
+    div.className = "subject";
+    div.textContent = mail.subject;
 
-        div.addEventListener("click", () => handleClick(index));
+    div.addEventListener("click", () => openEmail(i));
 
-        list.appendChild(div);
-    });
+    list.appendChild(div);
+  });
 }
 
-function handleClick(i) {
-    let mail = emails[i];
+function openEmail(i) {
+  const mail = emails[i];
 
-    if (mail.phishing) {
-        alert("You clicked a phishing email. You lose.");
-        location.reload();
-    } else {
-        score++;
-        document.getElementById("status").textContent = "Score: " + score;
-        emails.splice(i, 1);
-        drawEmails();
-    }
+  const view = document.getElementById("content-view");
+  view.textContent = mail.content;
+
+  if (mail.phishing) {
+    alert("You opened a phishing email. Game over.");
+    location.reload();
+  } else {
+    score++;
+    document.getElementById("score").textContent = `Score: ${score}`;
+  }
 }
 
-drawEmails();
+drawSubjects();
