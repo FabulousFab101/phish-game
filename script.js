@@ -295,7 +295,7 @@ function openAttachment(filename, emailIndex) {
 function markSpam(index) {
   const mail = emails[index];
   if (mail.attachment === "grandma.png") {
-    showPopup("Complete", "Score: 0%", "Retry", () => location.reload());
+    showPopup("You monster", "How could you", "Retry", () => location.reload());
   } else if (mail.phishing) {
     if (tutorialActive) triggerFinalPopup();
     else changeScore(+10);
