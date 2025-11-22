@@ -314,3 +314,9 @@ document.querySelectorAll('button.read').forEach(element => {
     clearEmailContents()
   })
 });
+document.querySelectorAll('button.start-button').forEach(element => {
+  element.addEventListener('click', (event) => {
+    offscreen = document.querySelector('div.off-screen')
+    offscreen.style.display = "none"
+  })
+});
