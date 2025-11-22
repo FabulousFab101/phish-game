@@ -483,8 +483,8 @@ phishing: false,
 
 // ------------------ SHUFFLE UTILS ------------------
 function shuffleEmails() {
-  for (let i = emails.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+  for (let i = emails.length - 1; i > 1; i--) {
+    const j = Math.floor(Math.random() * i) + 1;
     [emails[i], emails[j]] = [emails[j], emails[i]];
   }
 }
