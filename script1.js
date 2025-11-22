@@ -330,6 +330,92 @@ function updateTime() {
     minute: "2-digit"
   });
 }
+// ---------------- HELPER FUNCTIONS ----------------
+function markButtonsaAbility(isEnabled) {
+  document.querySelectorAll('button.spam').forEach(el => el.disabled = !isEnabled);
+  document.querySelectorAll('button.read').forEach(el => el.disabled = !isEnabled);
+}
+
+function clearEmailContents() {
+  document.querySelectorAll("p.from").forEach(el => el.innerHTML = "");
+  document.querySelectorAll("p.subject-line").forEach(el => el.innerHTML = "");
+  document.querySelectorAll("div.body").forEach(el => {
+    el.innerHTML = "";
+    const body = document.createElement('p');
+    body.style.margin = "0%";
+    el.appendChild(body);
+  });
+}
+
+// Open an email in the right-hand panel
+function openEmailByRow(row, index) {
+  const email = current_emails[index];
+  document.querySelectorAll("p.from").forEach(el => el.innerHTML = `${email.sendername} &lt${email.sender}&gt`);
+  document.querySelectorAll("p.subject-line").forEach(el => el.innerHTML = email.subject);
+  document.querySelectorAll("div.body").forEach(el => {
+    el.innerHTML = "";
+    const body = document.createElement('p');
+    body.style.margin = "0%";
+    body.innerHTML = email.body.replace(/\n/g, '<br>');
+    el.appendChild(body);
+  });
+  markButtonsaAbility(true);
+}
+
+// Delete current email and automatically select next
+function deleteRow(isSpam) {
+  const highlightedClass = 'highlighted';
+  const tbody = document.querySelector('tbody');
+  const rows = Array.from(tbody.children).filter(el => el.tagName === 'TR');
+  const currentIndex = rows.findIndex(el => el.classList.contains(highlightedClass));
+
+  if (rows[currentIndex]) {
+    // Remove current row and update score
+    rows[currentIndex].remove();
+    score -= 10 * (isSpam ^ current_emails[currentIndex].phishing) * current_emails[currentIndex].tutorial;
+    current_emails.splice(currentIndex, 1);
+    console.log(score);
+
+    // Select next email
+    const nextIndex = currentIndex < rows.length - 1 ? currentIndex : 0;
+    const nextRow = tbody.children[nextIndex];
+    if (nextRow) {
+      nextRow.classList.add(highlightedClass);
+      openEmailByRow(nextRow, nextIndex);
+    } else {
+      // No more emails
+      clearEmailContents();
+      markButtonsaAbility(false);
+    }
+  }
+}
+
+// ---------------- TABLE ROW CLICK ----------------
+document.querySelectorAll('table.interactive').forEach(table => {
+  table.addEventListener('click', event => {
+    const highlightedClass = 'highlighted';
+    const isRow = el => el.tagName === 'TR' && el.parentElement.tagName === 'TBODY';
+    const newlySelectedRow = event.composedPath().find(isRow);
+    if (!newlySelectedRow) return;
+
+    const tbody = newlySelectedRow.parentElement;
+    const previouslySelectedRow = Array.from(tbody.children).find(el => el.classList.contains(highlightedClass));
+    if (previouslySelectedRow) previouslySelectedRow.classList.remove(highlightedClass);
+
+    newlySelectedRow.classList.add(highlightedClass);
+    const newlySelectedRowIndex = Array.from(tbody.children).indexOf(newlySelectedRow);
+    openEmailByRow(newlySelectedRow, newlySelectedRowIndex);
+  });
+});
+
+// ---------------- BUTTONS ----------------
+document.querySelectorAll('button.spam').forEach(btn => {
+  btn.addEventListener('click', () => deleteRow(true));
+});
+
+document.querySelectorAll('button.read').forEach(btn => {
+  btn.addEventListener('click', () => deleteRow(false));
+});
 
 // update once on load
 updateTime();
